@@ -36,6 +36,14 @@ class HelloHandlerTest {
         assertTrue(response.getBody().contains("\"message\":\"Not Found\""));
     }
 
+    @Test
+    void nullEventReturns404() {
+        APIGatewayV2HTTPResponse response = handler.handleRequest(null, new TestContext());
+
+        assertEquals(404, response.getStatusCode());
+        assertTrue(response.getBody().contains("\"message\":\"Not Found\""));
+    }
+
     private static APIGatewayV2HTTPEvent helloEvent(String method, String path) {
         APIGatewayV2HTTPEvent event = new APIGatewayV2HTTPEvent();
         APIGatewayV2HTTPEvent.RequestContext requestContext = new APIGatewayV2HTTPEvent.RequestContext();

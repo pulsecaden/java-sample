@@ -10,8 +10,10 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
 import io.micronaut.function.aws.proxy.payload2.APIGatewayV2HTTPEventFunction;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("integration")
 class HelloControllerTest {
 
     @Test
@@ -26,11 +28,25 @@ class HelloControllerTest {
         event.setRawPath("/hello");
         event.setRouteKey("GET /hello");
 
-        APIGatewayV2HTTPEventFunction handler = new APIGatewayV2HTTPEventFunction();
-        APIGatewayV2HTTPResponse response = handler.handleRequest(event, new TestContext());
+        String previousPort = System.getProperty("micronaut.server.port");
+        System.setProperty("micronaut.server.port", "0");
+        APIGatewayV2HTTPEventFunction handler = null;
+        try {
+            handler = new APIGatewayV2HTTPEventFunction();
+            APIGatewayV2HTTPResponse response = handler.handleRequest(event, new TestContext());
 
-        assertEquals(200, response.getStatusCode());
-        assertTrue(response.getBody().contains("\"message\":\"Hello from Micronaut Lambda layer\""));
+            assertEquals(200, response.getStatusCode());
+            assertTrue(response.getBody().contains("\"message\":\"Hello from Micronaut Lambda layer\""));
+        } finally {
+            if (handler != null) {
+                handler.close();
+            }
+            if (previousPort == null) {
+                System.clearProperty("micronaut.server.port");
+            } else {
+                System.setProperty("micronaut.server.port", previousPort);
+            }
+        }
     }
 
     private static final class TestContext implements Context {

@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - develop
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  security-lite:
+    name: Security Lite
+    uses: pulsecaden/platform-workflows/.github/workflows/security-lite.yml@v1.0.0
+    permissions:
+      contents: read
+
+  java-ci:
+    name: Java CI (${{ matrix.component }})
+    needs: security-lite
+    strategy:
+      fail-fast: false
+      matrix:
+        component:
+          - springboot-microservice
+          - micronaut-lambda
+          - core-java-lambda
+    uses: pulsecaden/platform-workflows/.github/workflows/ci-java.yml@v1.0.0
+    permissions:
+      contents: read
+      actions: read
+      security-events: write
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+    with:
+      service_file: .platform/service.yml
+      component: ${{ matrix.component }}
+      ci_profile: light

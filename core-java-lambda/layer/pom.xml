@@ -14,6 +14,14 @@
     <artifactId>core-java-lambda-layer</artifactId>
     <name>Core Java Lambda Layer Sample</name>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>

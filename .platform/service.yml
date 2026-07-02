@@ -1,0 +1,23 @@
+name: java-sample
+description: Spring Boot, Micronaut Lambda, and core Java Lambda samples.
+language: java
+build_system: maven
+java_version: "21"
+components:
+  - name: springboot-microservice
+    type: microservice
+    path: springboot-microservice
+    artifacts:
+      - springboot-microservice/target/springboot-microservice-0.1.0-SNAPSHOT.jar
+  - name: micronaut-lambda
+    type: aws-lambda
+    path: micronaut-lambda
+    artifacts:
+      - micronaut-lambda/function/target/micronaut-lambda-function-0.1.0-SNAPSHOT-lambda.zip
+      - micronaut-lambda/layer/target/micronaut-lambda-layer-0.1.0-SNAPSHOT-layer.zip
+  - name: core-java-lambda
+    type: aws-lambda
+    path: core-java-lambda
+    artifacts:
+      - core-java-lambda/function/target/core-java-lambda-function-0.1.0-SNAPSHOT-lambda.zip
+      - core-java-lambda/layer/target/core-java-lambda-layer-0.1.0-SNAPSHOT-layer.zip

@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Core Java 21 Lambda hello-world sample with one Java layer.
+
+Globals:
+  Function:
+    Runtime: java21
+    MemorySize: 256
+    Timeout: 10
+    Architectures:
+      - x86_64
+
+Resources:
+  CoreJavaGreetingLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: core-java-greeting-layer
+      ContentUri: layer/target/core-java-lambda-layer-0.1.0-SNAPSHOT-layer.zip
+      CompatibleRuntimes:
+        - java21
+      RetentionPolicy: Delete
+
+  CoreJavaHelloFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: core-java-hello-function
+      CodeUri: function/target/core-java-lambda-function-0.1.0-SNAPSHOT-lambda.zip
+      Handler: com.pulsecaden.samples.corelambda.HelloHandler
+      Layers:
+        - !Ref CoreJavaGreetingLayer
+      Events:
+        Hello:
+          Type: HttpApi
+          Properties:
+            Path: /hello
+            Method: GET
+
+Outputs:
+  CoreJavaHelloApi:
+    Description: HTTP API endpoint for the core Java Lambda sample.
+    Value: !Sub 'https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/hello'

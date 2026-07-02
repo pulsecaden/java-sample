@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Micronaut Java 21 Lambda hello-world sample with one Java layer.
+
+Globals:
+  Function:
+    Runtime: java21
+    MemorySize: 512
+    Timeout: 20
+    Architectures:
+      - x86_64
+
+Resources:
+  MicronautGreetingLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: micronaut-greeting-layer
+      ContentUri: layer/target/micronaut-lambda-layer-0.1.0-SNAPSHOT-layer.zip
+      CompatibleRuntimes:
+        - java21
+      RetentionPolicy: Delete
+
+  MicronautHelloFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: micronaut-hello-function
+      CodeUri: function/target/micronaut-lambda-function-0.1.0-SNAPSHOT-lambda.zip
+      Handler: io.micronaut.function.aws.proxy.payload2.APIGatewayV2HTTPEventFunction
+      Layers:
+        - !Ref MicronautGreetingLayer
+      Events:
+        Hello:
+          Type: HttpApi
+          Properties:
+            Path: /hello
+            Method: GET
+
+Outputs:
+  MicronautHelloApi:
+    Description: HTTP API endpoint for the Micronaut Lambda sample.
+    Value: !Sub 'https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/hello'

@@ -1,23 +1,46 @@
-name: java-sample
-description: Spring Boot, Micronaut Lambda, and core Java Lambda samples.
-language: java
-build_system: maven
-java_version: "21"
+schema_version: 1
+
+service:
+  name: java-sample
+  owner_team: samples
+  tier: sample
+  description: Spring Boot, Micronaut Lambda, and core Java Lambda samples.
+
 components:
-  - name: springboot-microservice
+  springboot-microservice:
+    language: java
+    app_name: springboot-microservice
+    working_directory: .
+    java_version: "21"
+    build_system: maven
     type: microservice
-    path: springboot-microservice
+    maven_modules:
+      - springboot-microservice
     artifacts:
       - springboot-microservice/target/springboot-microservice-0.1.0-SNAPSHOT.jar
-  - name: micronaut-lambda
+  micronaut-lambda:
+    language: java
+    app_name: micronaut-lambda
+    working_directory: .
+    java_version: "21"
+    build_system: maven
     type: aws-lambda
-    path: micronaut-lambda
+    maven_modules:
+      - micronaut-lambda/layer
+      - micronaut-lambda/function
     artifacts:
       - micronaut-lambda/function/target/micronaut-lambda-function-0.1.0-SNAPSHOT-lambda.zip
       - micronaut-lambda/layer/target/micronaut-lambda-layer-0.1.0-SNAPSHOT-layer.zip
-  - name: core-java-lambda
+  core-java-lambda:
+    language: java
+    app_name: core-java-lambda
+    working_directory: .
+    java_version: "21"
+    build_system: maven
     type: aws-lambda
-    path: core-java-lambda
+    maven_modules:
+      - core-java-lambda/layer
+      - core-java-lambda/function
     artifacts:
       - core-java-lambda/function/target/core-java-lambda-function-0.1.0-SNAPSHOT-lambda.zip
       - core-java-lambda/layer/target/core-java-lambda-layer-0.1.0-SNAPSHOT-layer.zip

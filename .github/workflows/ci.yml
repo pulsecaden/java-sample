@@ -6,15 +6,46 @@ on:
     branches:
       - develop
       - main
+      - release/**
+      - hotfix/**
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
+  platform-workflow-ref-guard:
+    name: Platform Workflow Ref Guard
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Check platform workflow refs
+        run: .github/scripts/update-platform-workflow-ref.py --check
+
+  release-backmerge-gate:
+    name: Release Backmerge Gate
+    uses: pulsecaden/platform-workflows/.github/workflows/release-backmerge-gate.yml@v1.1.0
+    permissions:
+      contents: read
+      pull-requests: read
+    with:
+      allowed_post_tag_paths: |
+        pom.xml
+        springboot-microservice/pom.xml
+        micronaut-lambda/layer/pom.xml
+        micronaut-lambda/function/pom.xml
+        core-java-lambda/layer/pom.xml
+        core-java-lambda/function/pom.xml
+
   security-lite:
     name: Security Lite
-    uses: pulsecaden/platform-workflows/.github/workflows/security-lite.yml@v1.0.0
+    needs:
+      - platform-workflow-ref-guard
+      - release-backmerge-gate
+    uses: pulsecaden/platform-workflows/.github/workflows/security-lite.yml@v1.1.0
     permissions:
       contents: read
 
@@ -28,7 +59,7 @@ jobs:
           - springboot-microservice
           - micronaut-lambda
           - core-java-lambda
-    uses: pulsecaden/platform-workflows/.github/workflows/ci-java.yml@v1.0.0
+    uses: pulsecaden/platform-workflows/.github/workflows/ci-java.yml@v1.1.0
     permissions:
       contents: read
       actions: read

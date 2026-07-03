@@ -1,0 +1,5 @@
+schema_version: 1
+
+platform_workflows:
+  repository: pulsecaden/platform-workflows
+  ref: v1.1.0

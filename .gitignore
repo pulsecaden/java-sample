@@ -4,6 +4,7 @@
 # Maven build output
 target/
 .mvn/wrapper/dists/
+.tmp/
 
 # Log file
 *.log

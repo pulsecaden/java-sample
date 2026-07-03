@@ -1,0 +1,10 @@
+{
+  "name": "java-sample",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "ci:local:all": "./.github/scripts/run-local-all.sh",
+    "ci:local:resume": "./.github/scripts/run-local-all.sh --resume",
+    "ci:all": "npm run ci:local:all"
+  }
+}

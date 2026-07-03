@@ -23,6 +23,17 @@ Micronaut is pinned to the latest 4.x platform line (`4.10.16`) because the 5.x 
 ./mvnw package
 ```
 
+## Local CI
+
+The repo also exposes npm-compatible local CI wrappers for teams that use `npm run` as the command surface:
+
+```sh
+npm run ci:local:all
+npm run ci:local:resume
+```
+
+The local CI runner requires JDK 21 and `actionlint`. It runs the platform workflow ref guard, GitHub Actions lint, Maven clean tests, and Maven packaging. SAM template validation runs when the `sam` CLI is installed.
+
 ## Spring Boot Microservice
 
 ```sh
